@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: powerdns-traefik-sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: powerdns-traefik-sync
+  template:
+    metadata:
+      labels:
+        app: powerdns-traefik-sync
+    spec:
+      serviceAccountName: powerdns-traefik-sync-sa
+      containers:
+      - name: powerdns-traefik-sync
+        image: therbert6/pdns-traefik-sync:0.1
+        env:
+        # PDNS stuff
+        - name: PDNS_API_URL
+          value: "https://pdns-auth.example.com/api/v1"
+        - name: PDNS_API_KEY
+          value: "secret"
+        - name: PDNS_ZONE_NAME
+          value: "example.com."
+        - name: TTL
+          value: "3600"
+        - name: CONTENT
+          value: "ingress.example.com."
+        
+        # PTS tool settings
+        - name: DEBUG_LOGGING
+          value: "false"
+        - name: SLEEP_DURATION
+          value: "45" 
+
+        # PTS database
+        - name: PTS_DB_NAME
+          value: "records"      
+        - name: PTS_DB_USER
+          value: "postgres"
+        - name: PTS_DB_PASSWORD
+          value: "{{PTS_DB_PASSWORD}}"
+        - name: PTS_DB_HOST
+          value: "pts-postgres-db"       
+        - name: PTS_DB_PORT
+          value: "5432"       
+---
+# serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: powerdns-traefik-sync-sa
+---
+# clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ingressroute-reader
+rules:
+- apiGroups: ["traefik.containo.us"]
+  resources: ["ingressroutes"]
+  verbs: ["get", "list", "watch"]
+---
+# clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ingressroute-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: powerdns-traefik-sync-sa
+  namespace: pdns
+roleRef:
+  kind: ClusterRole
+  name: ingressroute-reader
+  apiGroup: rbac.authorization.k8s.io
