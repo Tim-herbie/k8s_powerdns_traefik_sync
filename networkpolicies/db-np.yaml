@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: psql-np
+spec:
+  podSelector:
+    matchLabels:
+      cluster-name: pts-postgres-db
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: powerdns-traefik-sync
+      ports:
+        - port: 5432
+    - from:
+        - podSelector:
+            matchLabels:
+              cluster-name: pts-postgres-db
+      ports:
+        - port: 5432
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgres-operator
+      ports:
+        - port: 5432
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              cluster-name: pts-postgres-db # Postgres database pods
+      ports:
+        - port: 5432
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns # K8S DNS pods
+      ports:
+        - port: 53
+          protocol: UDP
+
