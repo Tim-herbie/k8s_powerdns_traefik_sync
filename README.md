@@ -63,7 +63,7 @@
 
 
 
-This project provides a streamlined and efficient way to deploy a [PowerDNS](https://www.powerdns.com/) Authoritative and Recursor with an external Postgres Database within your Kubernetes environment.
+Traefik PowerDNS Updater is a Python-based Kubernetes application designed to streamline DNS management. It monitors Traefik IngressRoutes within your Kubernetes cluster and automatically creates or updates DNS records in PowerDNS.
 
 Components:
 * **PTS Tool (PowerDNS Traefik Sync)** Checks if Traefik ingressroutes were added or deleted and updates the PowerDNS via API
@@ -89,6 +89,7 @@ The following requirements are necessary to install the project.
 
 ### Already installed within your Kubernetes Cluster
 - Ingresscontroller Traefik
+- Zalando Postgres Operator
 
 ### Installation
 
