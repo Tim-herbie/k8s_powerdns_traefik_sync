@@ -21,7 +21,10 @@ spec:
         - name: PDNS_API_URL
           value: "{{PDNS_API_URL}}"
         - name: PDNS_API_KEY
-          value: "secret"
+          valueFrom:
+            secretKeyRef:
+              name: pdns-api-key-secret
+              key: PDNS_API_KEY
         - name: PDNS_ZONE_NAME
           value: "{{DNS_ZONE}}"
         - name: TTL

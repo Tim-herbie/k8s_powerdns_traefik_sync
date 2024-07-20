@@ -117,7 +117,7 @@ _The deployment is handled by a Makefile._
 | Parameter | Default value               | Description                 |
 |--------|------------------------|---------------------------------------|
 | PDNS_API_URL    | `https://pdns-auth.example.com/api/v1`           | The URL of your PowerDNS Server.             | 
-| PDNS_API_KEY   | `secret`           | The Secret of your PowerDNS API.                    | 
+| PDNS_API_KEY   | `secret`           | The Secret of your PowerDNS API. Fill it in the secret.yaml file               | 
 | PDNS_ZONE_NAME    | `example.com.`       | The DNS Zoneof your PowerDNS Server, which you would like to create/update the dns records.          | 
 | TTL    | `3600`       | The TTL of your dns records, which will be created.            |
 | CONTENT | `ingress.example.com.`       | The DNS-Name of an existing dns record that point to your Kuberentes Ingress Gateway.                  |
