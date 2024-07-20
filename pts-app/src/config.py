@@ -1,5 +1,6 @@
 import os
-import datetime
+
+from datetime import datetime
 
 # powerdns traefik sync tool settings
 DEBUG_LOGGING = os.getenv('DEBUG_LOGGING', '').lower() == 'true'
