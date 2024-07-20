@@ -19,15 +19,15 @@ spec:
         env:
         # PDNS stuff
         - name: PDNS_API_URL
-          value: "https://pdns-auth.example.com/api/v1"
+          value: "{{PDNS_API_URL}}"
         - name: PDNS_API_KEY
           value: "secret"
         - name: PDNS_ZONE_NAME
-          value: "example.com."
+          value: "{{DNS_ZONE}}"
         - name: TTL
           value: "3600"
         - name: CONTENT
-          value: "ingress.example.com."
+          value: "{{K8S_INGRESS}}"
         
         # PTS tool settings
         - name: DEBUG_LOGGING
