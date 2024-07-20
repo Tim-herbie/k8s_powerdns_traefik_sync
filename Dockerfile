@@ -4,7 +4,7 @@ FROM python:3.12.3-slim
 WORKDIR /app
 
 # Copy the requirements and python code file into the container
-COPY requirements.txt main.py .
+COPY pts-app/src .
 
 # Install the PostgreSQL development package, Python dependencies and other necessary dependencies
 RUN apt-get update && apt-get install -y \
