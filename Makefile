@@ -10,6 +10,7 @@ all: prep postgres-db-install wait_for_postgresql postgres-db-init pts-install
 
 prep:
 	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
+	kubectl -n $(NAMESPACE) apply -f ./secret.yaml
 
 postgres-db-install:
 	kubectl -n $(NAMESPACE) apply -f ./postgres-db.yaml
