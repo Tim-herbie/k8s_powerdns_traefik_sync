@@ -1,8 +1,10 @@
 import os
+import datetime
 
 # powerdns traefik sync tool settings
 DEBUG_LOGGING = os.getenv('DEBUG_LOGGING', '').lower() == 'true'
 SLEEP_DURATION = int(os.getenv('SLEEP_DURATION', '30'))
+timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 # Group, version and plural for IngressRoute
 TRAEFIK_CRD_GROUP = os.getenv('TRAEFIK_CRD_GROUP', 'traefik.io')

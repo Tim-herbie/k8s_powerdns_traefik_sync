@@ -24,9 +24,9 @@ def main():
                 if not record_exists:  # If record doesn't exist, create it
                     insert_traefik_ingressroute(db_params, host, RECORD_TYPE, CONTENT, TTL)
                     if add_dns_record(PDNS_API_URL, PDNS_API_KEY, SERVER_ID, PDNS_ZONE_NAME, full_record_name, RECORD_TYPE, CONTENT, TTL):
-                        log_message(f"The DNS record {full_record_name} has been created.")
+                        log_message(f"[{timestamp}]: The DNS record {full_record_name} has been created.")
                     else:
-                        log_message(f"Failed to create DNS record {full_record_name}.")
+                        log_message(f"[{timestamp}]: Failed to create DNS record {full_record_name}.")
 
             # Check if a ingressroute does not exist anymore
             existing_dns_records = get_added_traefik_ingressroutes(db_params)
