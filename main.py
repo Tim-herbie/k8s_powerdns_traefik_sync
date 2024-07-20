@@ -10,6 +10,11 @@ import os
 DEBUG_LOGGING = os.getenv('DEBUG_LOGGING', '').lower() == 'true'
 SLEEP_DURATION = int(os.getenv('SLEEP_DURATION', '30'))
 
+# Group, version and plural for IngressRoute
+TRAEFIK_CRD_GROUP = os.getenv('TRAEFIK_CRD_GROUP', 'traefik.io')
+TRAEFIK_CRD_VERSION = os.getenv('TRAEFIK_CRD_VERSION', 'v1alpha1')
+TRAEFIK_CRD_PLURAL = os.getenv('TRAEFIK_CRD_PLURAL', 'ingressroutes')
+
 # Configuration for PowerDNS
 PDNS_API_URL = os.getenv('PDNS_API_URL')
 PDNS_API_KEY = os.getenv('PDNS_API_KEY')
@@ -255,13 +260,8 @@ def main():
             # Create an instance of the API class
             custom_api = client.CustomObjectsApi()
 
-            # Group, version and plural for IngressRoute
-            group = 'traefik.containo.us'
-            version = 'v1alpha1'
-            plural = 'ingressroutes'
-
             # List all IngressRoute objects in all namespaces
-            ingress_routes = custom_api.list_cluster_custom_object(group, version, plural)
+            ingress_routes = custom_api.list_cluster_custom_object(TRAEFIK_CRD_GROUP, TRAEFIK_CRD_VERSION, TRAEFIK_CRD_PLURAL)
             if DEBUG_LOGGING:
                 log_message(f"Retrieved {len(ingress_routes.get('items', []))} IngressRoute objects.")
 
