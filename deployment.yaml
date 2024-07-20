@@ -15,7 +15,7 @@ spec:
       serviceAccountName: powerdns-traefik-sync-sa
       containers:
       - name: powerdns-traefik-sync
-        image: therbert6/pdns-traefik-sync:0.1
+        image: therbert6/pdns-traefik-sync:0.2
         env:
         # PDNS stuff
         - name: PDNS_API_URL
