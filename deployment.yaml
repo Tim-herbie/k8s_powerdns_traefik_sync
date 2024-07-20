@@ -59,7 +59,7 @@ kind: ClusterRole
 metadata:
   name: ingressroute-reader
 rules:
-- apiGroups: ["traefik.containo.us"]
+- apiGroups: ["traefik.containo.us","traefik.io"]
   resources: ["ingressroutes"]
   verbs: ["get", "list", "watch"]
 ---
