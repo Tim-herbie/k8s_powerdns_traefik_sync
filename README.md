@@ -40,11 +40,16 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#system-requirements-for-installation">System requirements</a></li>
+        <li><a href="#already-installed-within-your-kubernetes-cluster">Cluster requirements</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+     <ul>
+        <li><a href="clone-the-repo">Repository clone</a></li>
+        <li><a href="#fill-out-variables ">Adjust variables</a></li>
+         <li><a href="#install-the-makefile ">Deployment</a></li>
+      </ul>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -90,8 +95,10 @@ The following requirements are necessary to install the project.
 - Ingresscontroller Traefik
 - Zalando Postgres Operator
 
+### PowerDNS Version
+The tool was tested with **PowerDNS Authoritative Server 4.9.0**.
 
-
+<!-- Usage -->
 ## Usage
 
 _The deployment is handled by a Makefile._ Please always use a [released tag version](https://github.com/Tim-herbie/k8s_powerdns_traefik_sync/releases) instead of the unstable main branch!
@@ -116,7 +123,7 @@ _The deployment is handled by a Makefile._ Please always use a [released tag ver
 
 
 
-<!-- USAGE EXAMPLES -->
+<!-- Documentation -->
 ## Documentation
 
 ### PDNS Paramters
