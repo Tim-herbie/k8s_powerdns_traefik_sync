@@ -18,7 +18,7 @@
   <h3 align="center">PowerDNS Traefik Sync Tool for Kubernetes</h3>
 
   <p align="center">
-    A Python-based Kubernetes application that monitors Traefik IngressRoutes to automatically create DNS records in PowerDNS.
+    A Python-based Kubernetes application that monitors Traefik IngressRoutes within Kubernetes to automatically create DNS records in your PowerDNS-Server.
     <br />
     <br />
     ·
@@ -74,7 +74,6 @@ Components:
 
 
 
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -91,17 +90,24 @@ The following requirements are necessary to install the project.
 - Ingresscontroller Traefik
 - Zalando Postgres Operator
 
-### Installation
 
-_The deployment is handled by a Makefile._
 
-1. Clone the repo
-    ```sh
+## Usage
+
+_The deployment is handled by a Makefile._ Please always use a [released tag version](https://github.com/Tim-herbie/k8s_powerdns_traefik_sync/releases) instead of the unstable main branch!
+
+### Clone the repo
+   ```sh
    git clone https://github.com/Tim-herbie/k8s_powerdns_traefik_sync.git
    ```
-2.  Before you can deploy it, you have at least to adjust the deployment environment variables in the `deployment.yaml` file. 
+
+### Fill out variables 
+  Before you can deploy it, you have at least to adjust the following Makefile variables:
+  - PDNS_API_URL
+  - DNS_ZONE
+  - K8S_INGRESS
   
-3. Install the Makefile
+### Install the Makefile
    ```sh
    make all
    ```
@@ -111,7 +117,7 @@ _The deployment is handled by a Makefile._
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
+## Documentation
 
 ### PDNS Paramters
 | Parameter | Default value               | Description                 |
@@ -122,16 +128,17 @@ _The deployment is handled by a Makefile._
 | TTL    | `3600`       | The TTL of your dns records, which will be created.            |
 | CONTENT | `ingress.example.com.`       | The DNS-Name of an existing dns record that point to your Kuberentes Ingress Gateway.                  |
 
-
 ### PTS Tool Paramters
 | Parameter | Default value                | Description              |
 |--------|------------------------|---------------------------------------|
 | DEBUG_LOGGING    | `false`           | Debug Logging should only be activated for Troubleshooting, because it generates much Logs.             | 
 | SLEEP_DURATION   | `45`           | The time interval for the loop to check if new Traefik Ingressroutes were created/deleted.                    | 
-
+| TRAEFIK_CRD_GROUP   | `traefik.io`           | The CRD Group of Traefik.                    | 
+| TRAEFIK_CRD_VERSION   | `v1alpha1`           | The CRD Version of Traefik                    | 
+| TRAEFIK_CRD_PLURAL   | `ingressroutes`           | The CRD PLURAL of Traefik                   | 
 
 ### PSS Database Paramters
-| Parameter | Description               | Default value                   |
+| Parameter | Default value                | Description                |
 |--------|------------------------|---------------------------------------|
 | PTS_DB_NAME    | `records`           | The name of the PTS PSQL Database.             | 
 | PTS_DB_USER   | `postgres`           | The username of the PTS PSQL Database.                    | 
@@ -142,9 +149,7 @@ _The deployment is handled by a Makefile._
 ### Debug Logs
 If the `DEBUG_LOGGING` parameter in the `deployment.yaml` file is `false`, it will only log if a new Traefik Ingressroute was found or was not found anymore and deleted. If you are not sure that the tool is working fine, please change it to `true`.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 
