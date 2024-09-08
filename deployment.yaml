@@ -17,6 +17,14 @@ spec:
       - name: powerdns-traefik-sync
         image: therbert6/pdns-traefik-sync:0.2
         env:
+        # PTS tool settings
+        - name: PTS_MODE
+          value: "{{PTS_MODE}}"
+        - name: DEBUG_LOGGING
+          value: "false"
+        - name: SLEEP_DURATION
+          value: "45" 
+
         # PDNS stuff
         - name: PDNS_API_URL
           value: "{{PDNS_API_URL}}"
@@ -31,13 +39,7 @@ spec:
           value: "3600"
         - name: CONTENT
           value: "{{K8S_INGRESS}}"
-        
-        # PTS tool settings
-        - name: DEBUG_LOGGING
-          value: "false"
-        - name: SLEEP_DURATION
-          value: "45" 
-
+    
         # PTS database
         - name: PTS_DB_NAME
           value: "records"      
