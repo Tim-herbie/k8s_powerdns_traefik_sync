@@ -12,6 +12,7 @@ POSTGRES_OPERATOR_CHECK = $(shell kubectl get pods -A -l app.kubernetes.io/name=
 PTS_DB_PASSWORD = $(shell kubectl get secret postgres.pts-postgres-db.credentials.postgresql.acid.zalan.do -n $(NAMESPACE) -o json | jq '.data | map_values(@base64d)' | jq -r '.password')
 
 # PTS Tool Variables
+PTS_IMAGE_TAG := latest
 PTS_MODE := standard
 
 NAMESPACE := pdns
