@@ -11,17 +11,21 @@ POSTGRES_OPERATOR_CHECK = $(shell kubectl get pods -A -l app.kubernetes.io/name=
 # PowerDNS Variables 
 PTS_DB_PASSWORD = $(shell kubectl get secret postgres.pts-postgres-db.credentials.postgresql.acid.zalan.do -n $(NAMESPACE) -o json | jq '.data | map_values(@base64d)' | jq -r '.password')
 
+# PTS Tool Variables
+PTS_MODE := standard
+
 NAMESPACE := pdns
 PDNS_API_URL := https://pdns-auth.example.com/api/v1
 DNS_ZONE := example.com.
-K8S_INGRESS := ingress.example.com.
+TRAEFIK_NAMESPACE := traefik #necessary for the standard method
+K8S_INGRESS := ingress.example.com. #necessary for the advanced method
 
 .PHONY: install-postgresql-operator
 
 ###########################
 ### Deployment Section ####
 ###########################
-all: prep install-postgresql-operator wait_for_postgres_operator postgres-db-install wait_for_postgresql postgres-db-init pts-install
+all: prep install-postgresql-operator wait_for_postgres_operator postgres-db-install wait_for_postgresql postgres-db-init svc-reader-rbac pts-install
 
 prep:
 	kubectl create namespace $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
@@ -69,8 +73,13 @@ wait_for_postgresql:
 postgres-db-init:
 	kubectl -n $(NAMESPACE) apply -f ./postgres-init.yaml
 
+svc-reader-rbac:
+ifeq ($(PTS_MODE), standard)
+	kubectl -n $(TRAEFIK_NAMESPACE) apply -f ./service-reader-rbac.yaml
+endif
+
 pts-install:
-	cat ./deployment.yaml | sed 's|{{PTS_DB_PASSWORD}}|$(PTS_DB_PASSWORD)|g' | sed 's|{{DNS_ZONE}}|$(DNS_ZONE)|g' | sed 's|{{K8S_INGRESS}}|$(K8S_INGRESS)|g' | sed 's|{{PDNS_API_URL}}|$(PDNS_API_URL)|g' | kubectl -n $(NAMESPACE) apply -f -
+	cat ./deployment.yaml | sed 's|{{PTS_DB_PASSWORD}}|$(PTS_DB_PASSWORD)|g' | sed 's|{{DNS_ZONE}}|$(DNS_ZONE)|g' | sed 's|{{K8S_INGRESS}}|$(K8S_INGRESS)|g' | sed 's|{{PDNS_API_URL}}|$(PDNS_API_URL)|g' | sed 's|{{PTS_MODE}}|$(PTS_MODE)|g' | sed 's|{{PTS_IMAGE_TAG}}|$(PTS_IMAGE_TAG)|g' | kubectl -n $(NAMESPACE) apply -f -
 
 delete:
 	kubectl -n $(NAMESPACE) delete -f ./deployment.yaml --ignore-not-found=true

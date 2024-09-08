@@ -10,9 +10,9 @@ def insert_traefik_ingressroute(db_params, host, RECORD_TYPE, CONTENT, TTL):
     try:
         conn = psycopg2.connect(**db_params)
         if DEBUG_LOGGING:
-            print("Connection to the database established successfully.")
+            print("Connection to the pts database established successfully.")
     except Exception as error:
-        print(f"Error: Could not make connection to the database.\n{error}")
+        print(f"Error: Could not make connection to the pts database.\n{error}")
         exit(1)
 
     # Create a cursor object
@@ -33,7 +33,7 @@ def insert_traefik_ingressroute(db_params, host, RECORD_TYPE, CONTENT, TTL):
         # Commit the transaction
         conn.commit()
         if DEBUG_LOGGING:
-            print("Record inserted successfully.")
+            print("Record inserted successfully into the pts database.")
     except Exception as error:
         print(f"Error: Failed to execute query.\n{error}")
         conn.rollback()
@@ -42,16 +42,16 @@ def insert_traefik_ingressroute(db_params, host, RECORD_TYPE, CONTENT, TTL):
     cur.close()
     conn.close()
     if DEBUG_LOGGING:
-        print("Connection closed.")
+        print("Connection to the pts database closed.")
 
 def get_added_traefik_ingressroutes(db_params):
     # Establish the connection
     try:
         conn = psycopg2.connect(**db_params)
         if DEBUG_LOGGING:
-            print("Connection to the database established successfully.")
+            print("Connection to the pts database established successfully.")
     except Exception as error:
-        print(f"Error: Could not make connection to the database.\n{error}")
+        print(f"Error: Could not make connection to the pts database.\n{error}")
         exit(1)
 
     # Create a cursor object
@@ -71,7 +71,7 @@ def get_added_traefik_ingressroutes(db_params):
         cur.close()
         conn.close()
         if DEBUG_LOGGING:
-            print("Connection closed.")
+            print("Connection to the pts database closed.")
         
         # Return fetched rows
         return rows
@@ -90,9 +90,9 @@ def remove_added_traefik_ingressroute(db_params, host):
     try:
         conn = psycopg2.connect(**db_params)
         if DEBUG_LOGGING:
-            print("Connection to the database established successfully.")
+            print("Connection to the pts database established successfully.")
     except Exception as error:
-        print(f"Error: Could not make connection to the database.\n{error}")
+        print(f"Error: Could not make connection to the pts database.\n{error}")
         exit(1)
 
     # Create a cursor object
@@ -119,4 +119,4 @@ def remove_added_traefik_ingressroute(db_params, host):
     cur.close()
     conn.close()
     if DEBUG_LOGGING:
-        print("Connection closed.")
+        print("Connection to the pts database closed.")

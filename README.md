@@ -93,10 +93,16 @@ The following requirements are necessary to install the project.
 
 ### Already installed within your Kubernetes Cluster
 - Ingresscontroller Traefik
-- Zalando Postgres Operator
+- Zalando Postgres Operator (will be installed if not already done )
 
 ### PowerDNS Version
 The tool was tested with **PowerDNS Authoritative Server 4.9.0**.
+
+### PowerDNS Traefik Sync Tool Mode
+The PowerDNS Traefik Sync Tool can be run with two different modes:
+- **Normal:** This is the simpler method, which uses the external IP of the Traefik service and points directly to that IP address (A-Record).
+- **Advanced:** The advanced mode requires the `K8S_INGRESS` variable, which directs all domains to the configured K8S_INGRESS domain using a CNAME record.
+  
 
 <!-- Usage -->
 ## Usage
@@ -110,9 +116,16 @@ _The deployment is handled by a Makefile._ Please always use a [released tag ver
 
 ### Fill out variables 
   Before you can deploy it, you have at least to adjust the following Makefile variables:
+
+  **Standard pts method:**
   - PDNS_API_URL
   - DNS_ZONE
-  - K8S_INGRESS
+  - TRAEFIK_NAMESPACE (only necessary for the standard pts method)
+
+  **Advanced pts method:**
+  - PDNS_API_URL
+  - DNS_ZONE
+  - K8S_INGRESS (only necessary for the advanced pts method)
   
 ### Install the Makefile
    ```sh
@@ -138,8 +151,10 @@ _The deployment is handled by a Makefile._ Please always use a [released tag ver
 ### PTS Tool Paramters
 | Parameter | Default value                | Description              |
 |--------|------------------------|---------------------------------------|
+| PTS_MODE    | `standard`           | The mode of the PTS tool. |
 | DEBUG_LOGGING    | `false`           | Debug Logging should only be activated for Troubleshooting, because it generates much Logs.             | 
 | SLEEP_DURATION   | `45`           | The time interval for the loop to check if new Traefik Ingressroutes were created/deleted.                    | 
+| TRAEFIK_NAMESPACE   | `traefik`           | The Namespace where the application traefik is deployed.                    | 
 | TRAEFIK_CRD_GROUP   | `traefik.io`           | The CRD Group of Traefik.                    | 
 | TRAEFIK_CRD_VERSION   | `v1alpha1`           | The CRD Version of Traefik                    | 
 | TRAEFIK_CRD_PLURAL   | `ingressroutes`           | The CRD PLURAL of Traefik                   | 

@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pts-service-reader
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pts-service-reader-binding
+subjects:
+- kind: ServiceAccount
+  name: powerdns-traefik-sync-sa
+roleRef:
+  kind: Role
+  name: pts-service-reader
+  apiGroup: rbac.authorization.k8s.io
