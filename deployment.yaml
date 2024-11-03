@@ -27,6 +27,8 @@ spec:
         # PTS tool settings
         - name: PTS_MODE
           value: "{{PTS_MODE}}"
+        - name: PTS_DOMAIN_LIST
+          value: "{{PTS_DOMAIN_LIST}}"
         - name: DEBUG_LOGGING
           value: "false"
         - name: SLEEP_DURATION
