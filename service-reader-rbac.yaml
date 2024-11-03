@@ -14,6 +14,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: powerdns-traefik-sync-sa
+  namespace: {{PTS_NAMESPACE}}
 roleRef:
   kind: Role
   name: pts-service-reader

@@ -14,6 +14,7 @@ PTS_DB_PASSWORD = $(shell kubectl get secret postgres.pts-postgres-db.credential
 # PTS Tool Variables
 PTS_IMAGE_TAG := latest
 PTS_MODE := standard
+PTS_DOMAIN_LIST := all
 
 NAMESPACE := pdns
 PDNS_API_URL := https://pdns-auth.example.com/api/v1
@@ -76,11 +77,11 @@ postgres-db-init:
 
 svc-reader-rbac:
 ifeq ($(PTS_MODE), standard)
-	kubectl -n $(TRAEFIK_NAMESPACE) apply -f ./service-reader-rbac.yaml
+	cat ./service-reader-rbac.yaml | sed 's|{{PTS_NAMESPACE}}|$(NAMESPACE)|g' | kubectl -n $(TRAEFIK_NAMESPACE) apply -f -
 endif
 
 pts-install:
-	cat ./deployment.yaml | sed 's|{{PTS_DB_PASSWORD}}|$(PTS_DB_PASSWORD)|g' | sed 's|{{DNS_ZONE}}|$(DNS_ZONE)|g' | sed 's|{{K8S_INGRESS}}|$(K8S_INGRESS)|g' | sed 's|{{PDNS_API_URL}}|$(PDNS_API_URL)|g' | sed 's|{{PTS_MODE}}|$(PTS_MODE)|g' | sed 's|{{PTS_IMAGE_TAG}}|$(PTS_IMAGE_TAG)|g' | kubectl -n $(NAMESPACE) apply -f -
+	cat ./deployment.yaml | sed 's|{{PTS_DB_PASSWORD}}|$(PTS_DB_PASSWORD)|g' | sed 's|{{DNS_ZONE}}|$(DNS_ZONE)|g' | sed 's|{{K8S_INGRESS}}|$(K8S_INGRESS)|g' | sed 's|{{PDNS_API_URL}}|$(PDNS_API_URL)|g' | sed 's|{{PTS_MODE}}|$(PTS_MODE)|g' | sed 's|{{PTS_IMAGE_TAG}}|$(PTS_IMAGE_TAG)|g' | sed 's|{{PTS_DOMAIN_LIST}}|$(PTS_DOMAIN_LIST)|g' | kubectl -n $(NAMESPACE) apply -f -
 
 delete:
 	kubectl -n $(NAMESPACE) delete -f ./deployment.yaml --ignore-not-found=true

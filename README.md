@@ -152,6 +152,7 @@ _The deployment is handled by a Makefile._ Please always use a [released tag ver
 | Parameter | Default value                | Description              |
 |--------|------------------------|---------------------------------------|
 | PTS_MODE    | `standard`           | The mode of the PTS tool. |
+| PTS_DOMAIN_LIST    | `all`           | Comma separated list of domains which should be handled with the PTS tool. |
 | DEBUG_LOGGING    | `false`           | Debug Logging should only be activated for Troubleshooting, because it generates much Logs.             | 
 | SLEEP_DURATION   | `45`           | The time interval for the loop to check if new Traefik Ingressroutes were created/deleted.                    | 
 | TRAEFIK_NAMESPACE   | `traefik`           | The Namespace where the application traefik is deployed.                    | 

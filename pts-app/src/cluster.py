@@ -43,16 +43,22 @@ def get_ingressroute_objects():
                 # Strip quotes and any other unnecessary characters
                 domain = domain.strip('"').strip("'").strip('`')
 
-                # Get all entrypoints
-                for entrypoint in entrypoints:
-                    entrypoints_list.append(entrypoint)
+                # Handle only domains that were defined before
+                if PTS_DOMAIN_LIST == "all" or any(domain.endswith(d) for d in PTS_DOMAIN_LIST.split(",")):
+                    # Get all entrypoints
+                    for entrypoint in entrypoints:
+                        entrypoints_list.append(entrypoint)
 
-                # Create the domain + entrypoint object
-                domain_data = {
-                    "domain": domain,
-                    "entrypoints": entrypoints_list
-                }
-                domains_data.append(domain_data)
+                    # Create the domain + entrypoint object
+                    domain_data = {
+                        "domain": domain,
+                        "entrypoints": entrypoints_list
+                    }
+                    domains_data.append(domain_data)
+                else:
+                    if DEBUG_LOGGING:
+                        log_message("This domain is not in the PTS domain list and will not be handled:")
+                        log_message(domain)
 
     # Print collected domain values
     if DEBUG_LOGGING:

@@ -7,6 +7,7 @@ PTS_MODE = os.getenv('PTS_MODE', 'standard')
 DEBUG_LOGGING = os.getenv('DEBUG_LOGGING', '').lower() == 'true'
 SLEEP_DURATION = int(os.getenv('SLEEP_DURATION', '30'))
 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+PTS_DOMAIN_LIST = os.getenv('PTS_DOMAIN_LIST', 'all')
 
 # Group, version and plural for IngressRoute
 TRAEFIK_CRD_GROUP = os.getenv('TRAEFIK_CRD_GROUP', 'traefik.io')
