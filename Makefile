@@ -10,17 +10,20 @@ POSTGRES_OPERATOR_CHECK = $(shell kubectl get pods -A -l app.kubernetes.io/name=
 
 # PowerDNS Variables 
 PTS_DB_PASSWORD = $(shell kubectl get secret postgres.pts-postgres-db.credentials.postgresql.acid.zalan.do -n $(NAMESPACE) -o json | jq '.data | map_values(@base64d)' | jq -r '.password')
+KUBERNETES_API_IP=$(shell kubectl config view --minify --output 'jsonpath={.clusters[0].cluster.server}' | sed -E 's|https://([^:/]+).*|\1/32|')
 
 # PTS Tool Variables
 PTS_IMAGE_TAG := latest
 PTS_MODE := standard
 PTS_DOMAIN_LIST := all
-
 NAMESPACE := pdns
+POWERDNS_API_IP := 10.0.60.120/32
 PDNS_API_URL := https://pdns-auth.example.com/api/v1
 DNS_ZONE := example.com.
 TRAEFIK_NAMESPACE := traefik #necessary for the standard method
 K8S_INGRESS := ingress.example.com. #necessary for the advanced method
+
+all: prep install-networkpolicies postgres-db-install wait_for_postgresql postgres-db-init pts-install
 
 .PHONY: install-postgresql-operator
 
@@ -56,6 +59,12 @@ wait_for_postgres_operator:
             sleep 10; \
         fi; \
     done
+
+install-networkpolicies:
+	printf '%s' "$$(cat ./networkpolicies/pts-np.yaml \
+        | sed -e 's|{{KUBERNETES_API_IP}}|$(KUBERNETES_API_IP)|g' -e 's|{{POWERDNS_API_IP}}|$(POWERDNS_API_IP)|g')" \
+        | kubectl -n $(NAMESPACE) apply -f -
+	kubectl -n $(NAMESPACE) apply -f ./networkpolicies/db-np.yaml
 
 postgres-db-install:
 	kubectl -n $(NAMESPACE) apply -f ./postgres-db.yaml
