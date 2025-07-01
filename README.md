@@ -18,7 +18,7 @@
   <h3 align="center">PowerDNS Traefik Sync Tool for Kubernetes</h3>
 
   <p align="center">
-    A Python-based Kubernetes application that monitors Traefik IngressRoutes to automatically create DNS records in PowerDNS.
+    A Python-based Kubernetes application that monitors Traefik IngressRoutes within Kubernetes to automatically create DNS records in your PowerDNS-Server.
     <br />
     <br />
     ·
@@ -40,11 +40,16 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#system-requirements-for-installation">System requirements</a></li>
+        <li><a href="#already-installed-within-your-kubernetes-cluster">Cluster requirements</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+     <ul>
+        <li><a href="clone-the-repo">Repository clone</a></li>
+        <li><a href="#fill-out-variables ">Adjust variables</a></li>
+         <li><a href="#install-the-makefile ">Deployment</a></li>
+      </ul>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -63,7 +68,7 @@
 
 
 
-This project provides a streamlined and efficient way to deploy a [PowerDNS](https://www.powerdns.com/) Authoritative and Recursor with an external Postgres Database within your Kubernetes environment.
+Traefik PowerDNS Updater is a Python-based Kubernetes application designed to streamline DNS management. It monitors Traefik IngressRoutes within your Kubernetes cluster and automatically creates or updates DNS records in PowerDNS.
 
 Components:
 * **PTS Tool (PowerDNS Traefik Sync)** Checks if Traefik ingressroutes were added or deleted and updates the PowerDNS via API
@@ -71,7 +76,6 @@ Components:
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 
@@ -89,18 +93,41 @@ The following requirements are necessary to install the project.
 
 ### Already installed within your Kubernetes Cluster
 - Ingresscontroller Traefik
+- Zalando Postgres Operator (will be installed if not already done )
 
-### Installation
+### PowerDNS Version
+The tool was tested with **PowerDNS Authoritative Server 4.9.0**.
 
-_The deployment is handled by a Makefile._
+### PowerDNS Traefik Sync Tool Mode
+The PowerDNS Traefik Sync Tool can be run with two different modes:
+- **Normal:** This is the simpler method, which uses the external IP of the Traefik service and points directly to that IP address (A-Record).
+- **Advanced:** The advanced mode requires the `K8S_INGRESS` variable, which directs all domains to the configured K8S_INGRESS domain using a CNAME record.
+  
 
-1. Clone the repo
-    ```sh
+<!-- Usage -->
+## Usage
+
+_The deployment is handled by a Makefile._ Please always use a [released tag version](https://github.com/Tim-herbie/k8s_powerdns_traefik_sync/releases) instead of the unstable main branch!
+
+### Clone the repo
+   ```sh
    git clone https://github.com/Tim-herbie/k8s_powerdns_traefik_sync.git
    ```
-2.  Before you can deploy it, you have at least to adjust the deployment environment variables in the `deployment.yaml` file. 
+
+### Fill out variables 
+  Before you can deploy it, you have at least to adjust the following Makefile variables:
+
+  **Standard pts method:**
+  - PDNS_API_URL
+  - DNS_ZONE
+  - TRAEFIK_NAMESPACE (only necessary for the standard pts method)
+
+  **Advanced pts method:**
+  - PDNS_API_URL
+  - DNS_ZONE
+  - K8S_INGRESS (only necessary for the advanced pts method)
   
-3. Install the Makefile
+### Install the Makefile
    ```sh
    make all
    ```
@@ -109,28 +136,32 @@ _The deployment is handled by a Makefile._
 
 
 
-<!-- USAGE EXAMPLES -->
-## Usage
+<!-- Documentation -->
+## Documentation
 
 ### PDNS Paramters
 | Parameter | Default value               | Description                 |
 |--------|------------------------|---------------------------------------|
 | PDNS_API_URL    | `https://pdns-auth.example.com/api/v1`           | The URL of your PowerDNS Server.             | 
-| PDNS_API_KEY   | `secret`           | The Secret of your PowerDNS API.                    | 
+| PDNS_API_KEY   | `secret`           | The Secret of your PowerDNS API. Fill it in the secret.yaml file               | 
 | PDNS_ZONE_NAME    | `example.com.`       | The DNS Zoneof your PowerDNS Server, which you would like to create/update the dns records.          | 
 | TTL    | `3600`       | The TTL of your dns records, which will be created.            |
 | CONTENT | `ingress.example.com.`       | The DNS-Name of an existing dns record that point to your Kuberentes Ingress Gateway.                  |
 
-
 ### PTS Tool Paramters
 | Parameter | Default value                | Description              |
 |--------|------------------------|---------------------------------------|
+| PTS_MODE    | `standard`           | The mode of the PTS tool. |
+| PTS_DOMAIN_LIST    | `all`           | Comma separated list of domains which should be handled with the PTS tool. |
 | DEBUG_LOGGING    | `false`           | Debug Logging should only be activated for Troubleshooting, because it generates much Logs.             | 
 | SLEEP_DURATION   | `45`           | The time interval for the loop to check if new Traefik Ingressroutes were created/deleted.                    | 
-
+| TRAEFIK_NAMESPACE   | `traefik`           | The Namespace where the application traefik is deployed.                    | 
+| TRAEFIK_CRD_GROUP   | `traefik.io`           | The CRD Group of Traefik.                    | 
+| TRAEFIK_CRD_VERSION   | `v1alpha1`           | The CRD Version of Traefik                    | 
+| TRAEFIK_CRD_PLURAL   | `ingressroutes`           | The CRD PLURAL of Traefik                   | 
 
 ### PSS Database Paramters
-| Parameter | Description               | Default value                   |
+| Parameter | Default value                | Description                |
 |--------|------------------------|---------------------------------------|
 | PTS_DB_NAME    | `records`           | The name of the PTS PSQL Database.             | 
 | PTS_DB_USER   | `postgres`           | The username of the PTS PSQL Database.                    | 
@@ -141,9 +172,7 @@ _The deployment is handled by a Makefile._
 ### Debug Logs
 If the `DEBUG_LOGGING` parameter in the `deployment.yaml` file is `false`, it will only log if a new Traefik Ingressroute was found or was not found anymore and deleted. If you are not sure that the tool is working fine, please change it to `true`.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 

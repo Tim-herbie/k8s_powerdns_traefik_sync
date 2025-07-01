@@ -15,26 +15,40 @@ spec:
       serviceAccountName: powerdns-traefik-sync-sa
       containers:
       - name: powerdns-traefik-sync
-        image: therbert6/pdns-traefik-sync:0.1
+        image: therbert6/pdns-traefik-sync:{{PTS_IMAGE_TAG}}
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "10m"
+          limits:
+            memory: "200Mi"
+            cpu: "100m"
         env:
-        # PDNS stuff
-        - name: PDNS_API_URL
-          value: "https://pdns-auth.example.com/api/v1"
-        - name: PDNS_API_KEY
-          value: "secret"
-        - name: PDNS_ZONE_NAME
-          value: "example.com."
-        - name: TTL
-          value: "3600"
-        - name: CONTENT
-          value: "ingress.example.com."
-        
         # PTS tool settings
+        - name: PTS_MODE
+          value: "{{PTS_MODE}}"
+        - name: PTS_DOMAIN_LIST
+          value: "{{PTS_DOMAIN_LIST}}"
         - name: DEBUG_LOGGING
           value: "false"
         - name: SLEEP_DURATION
           value: "45" 
 
+        # PDNS stuff
+        - name: PDNS_API_URL
+          value: "{{PDNS_API_URL}}"
+        - name: PDNS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: pdns-api-key-secret
+              key: PDNS_API_KEY
+        - name: PDNS_ZONE_NAME
+          value: "{{DNS_ZONE}}"
+        - name: TTL
+          value: "3600"
+        - name: CONTENT
+          value: "{{K8S_INGRESS}}"
+    
         # PTS database
         - name: PTS_DB_NAME
           value: "records"      
@@ -59,7 +73,7 @@ kind: ClusterRole
 metadata:
   name: ingressroute-reader
 rules:
-- apiGroups: ["traefik.containo.us"]
+- apiGroups: ["traefik.containo.us","traefik.io"]
   resources: ["ingressroutes"]
   verbs: ["get", "list", "watch"]
 ---
