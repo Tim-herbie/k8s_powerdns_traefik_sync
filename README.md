@@ -72,7 +72,7 @@ Traefik PowerDNS Updater is a Python-based Kubernetes application designed to st
 
 Components:
 * **PTS Tool (PowerDNS Traefik Sync)** Checks if Traefik ingressroutes were added or deleted and updates the PowerDNS via API
-* **HA Postgres Database:** Database of DNS records for the current state (by [Postgres Zalando Operator](https://www.powerdns.com/))
+* **OUT OF SCOPE:** PowerdNS Database of DNS records for the current state
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -88,12 +88,10 @@ The following requirements are necessary to install the project.
 - A running Kubernetes cluster
 - kubectl installed and configured
 - git installed and configured
-- jq installed
-- makefile installed
 
 ### Already installed within your Kubernetes Cluster
 - Ingresscontroller Traefik
-- Zalando Postgres Operator (will be installed if not already done )
+- Postgres database
 
 ### PowerDNS Version
 The tool was tested with **PowerDNS Authoritative Server 4.9.0**.

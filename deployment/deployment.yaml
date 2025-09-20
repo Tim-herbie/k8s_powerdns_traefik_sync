@@ -15,7 +15,7 @@ spec:
       serviceAccountName: powerdns-traefik-sync-sa
       containers:
       - name: powerdns-traefik-sync
-        image: therbert6/pdns-traefik-sync:{{PTS_IMAGE_TAG}}
+        image: therbert6/pdns-traefik-sync:latest
         resources:
           requests:
             memory: "100Mi"
@@ -26,9 +26,9 @@ spec:
         env:
         # PTS tool settings
         - name: PTS_MODE
-          value: "{{PTS_MODE}}"
+          value: "standard"
         - name: PTS_DOMAIN_LIST
-          value: "{{PTS_DOMAIN_LIST}}"
+          value: "all"
         - name: DEBUG_LOGGING
           value: "false"
         - name: SLEEP_DURATION
@@ -36,28 +36,31 @@ spec:
 
         # PDNS stuff
         - name: PDNS_API_URL
-          value: "{{PDNS_API_URL}}"
+          value: "https://pdns-auth.example.com/api/v1"
         - name: PDNS_API_KEY
           valueFrom:
             secretKeyRef:
               name: pdns-api-key-secret
               key: PDNS_API_KEY
         - name: PDNS_ZONE_NAME
-          value: "{{DNS_ZONE}}"
+          value: "example.com"
         - name: TTL
           value: "3600"
         - name: CONTENT
-          value: "{{K8S_INGRESS}}"
+          value: "ingress.example.com."
     
         # PTS database
         - name: PTS_DB_NAME
-          value: "records"      
+          value: "pts"      
         - name: PTS_DB_USER
-          value: "postgres"
+          value: "pts"
         - name: PTS_DB_PASSWORD
-          value: "{{PTS_DB_PASSWORD}}"
+          valueFrom:
+            secretKeyRef:
+              name: pts-psql-credentials
+              key: PTS_DB_PASSWORD
         - name: PTS_DB_HOST
-          value: "pts-postgres-db"       
+          value: "postgres-rw.db.svc.cluster.local"       
         - name: PTS_DB_PORT
           value: "5432"       
 ---
